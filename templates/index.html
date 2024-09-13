@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 A DAY {{ date }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.1/lottie.min.js"></script>
+</head>
+<body>
+    <div id="lottie-background-left" class="lottie-background"></div>
+    <div id="lottie-background-right" class="lottie-background"></div>
+
+    <div class="container">
+        <header class="header">
+            <img src="{{ url_for('static', filename='title.png') }}" alt="Corbett Maths Worksheets" class="title-image">
+            <img src="{{ url_for('static', filename='lights.png') }}" alt="Lights Overlay" class="lights-overlay">
+            <p class="date">For today's date: {{ date }}</p>
+        </header>
+        <div class="card gcse">
+            <h2>GCSE Worksheets</h2>
+            <ul>
+                {% if gcse_links != "No GCSE worksheets found for today" %}
+                    {% for text, link in gcse_links %}
+                        <li><a href="{{ link }}" target="_blank">{{ text }}</a></li>
+                    {% endfor %}
+                {% else %}
+                    <li>{{ gcse_links }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="card further-maths">
+            <h2>Further Maths Worksheets</h2>
+            <ul>
+                {% if further_maths_links != "No Further Maths worksheets found for today" %}
+                    {% for text, link in further_maths_links %}
+                        <li><a href="{{ link }}" target="_blank">{{ text }}</a></li>
+                    {% endfor %}
+                {% else %}
+                    <li>{{ further_maths_links }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="card gcse">
+            <h2>GCSE Answers</h2>
+            <ul>
+                {% if gcse_answers != "No GCSE answers found for today" %}
+                    {% for text, link in gcse_answers %}
+                        <li><a href="{{ link }}" target="_blank">{{ text }}</a></li>
+                    {% endfor %}
+                {% else %}
+                    <li>{{ gcse_answers }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="card further-maths">
+            <h2>Further Maths Answers</h2>
+            <ul>
+                {% if further_maths_answers != "No Further Maths answers found for today" %}
+                    {% for text, link in further_maths_answers %}
+                        <li><a href="{{ link }}" target="_blank">{{ text }}</a></li>
+                    {% endfor %}
+                {% else %}
+                    <li>{{ further_maths_answers }}</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div id="squares-container"></div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
