@@ -18,10 +18,15 @@ import holidays
 # Regular expressions to clean and normalise the date text
 import re
 
+from flask_socketio import SocketIO, emit
 ######################################################################################################
 
 # create the Flask app
 app = Flask(__name__)
+socketio = SocketIO(app)
+
+def send_progress(message):
+    socketio.emit('progress', {'message': message})
 
 # function to remove ordinal indicators from date text (e.g 31st, 1st, 2nd, 3rd, 4th)
 def remove_ordinal_indicator(date_text):
@@ -84,6 +89,8 @@ def parse_date(date_text):
 
 # function to get the worksheets and answers from the corbettmaths website
 def get_worksheets_and_answers():
+    # Step 1: Fetching URLs
+    send_progress("Fetching URLs...")
     urls = {
         'GCSE': 'https://corbettmaths.com/5-a-day/gcse/',
         'Further Maths': 'https://corbettmaths.com/5-a-day/further-maths/'
@@ -96,8 +103,9 @@ def get_worksheets_and_answers():
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
 
+            # Step 2: Parsing GCSE Worksheets
             if category == 'GCSE':
-                # find worksheets
+                send_progress("Parsing GCSE Worksheets...")
                 for p in soup.find_all(['p', 'div']):
                     text = p.get_text().strip()
                     if text and any(month in text for month in ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']):
@@ -111,7 +119,8 @@ def get_worksheets_and_answers():
                                 else:
                                     worksheets[category][date.date()] = worksheet_links
 
-                # find answers link
+                # Find answers link
+                send_progress("Finding answers link for GCSE...")
                 current_month = datetime.now().strftime('%B')
                 answers_link = None
                 for a in soup.find_all('a', href=True):
@@ -119,8 +128,8 @@ def get_worksheets_and_answers():
                         answers_link = a['href']
                         break
                 
-                # find answers
                 if answers_link:
+                    send_progress("Fetching answers for GCSE...")
                     answers_response = requests.get(answers_link)
                     if answers_response.status_code == 200:
                         answers_soup = BeautifulSoup(answers_response.text, 'html.parser')
@@ -137,14 +146,14 @@ def get_worksheets_and_answers():
                                         else:
                                             answers['GCSE'][date.date()] = answer_links
 
-            # find worksheets and answers for further maths
+            # Step 3: Parsing Further Maths Worksheets
             elif category == 'Further Maths':
+                send_progress("Parsing Further Maths Worksheets...")
                 for entry in soup.find_all('span', class_="s1"):
                     date_text = entry.text.strip().split(' ', 2)[:2]
                     date_text = " ".join(date_text)
                     print(f"{category} Extracted date text: {date_text}")  # debugging
 
-                    # parse the date text
                     date = parse_date(date_text)
                     if date:
                         worksheet_links = [(link.text.strip(), link['href']) for link in entry.find_all('a', href=True)]
@@ -160,7 +169,8 @@ def get_worksheets_and_answers():
                             else:
                                 answers[category][date.date()] = answer_links
 
-    # fetch answers index page
+    # Step 4: Fetching Answers
+    send_progress("Fetching Answers index...")
     answers_index_url = 'https://corbettmaths.com/5-a-day/gcse/'
     print(f"Fetching answers index from: {answers_index_url}")
     response = requests.get(answers_index_url)
@@ -170,7 +180,6 @@ def get_worksheets_and_answers():
         current_month_name = datetime.now().strftime('%B')
         link_text = f'{current_month_name} Answers – click here'
 
-        # find the correct answers link
         answers_link = None
         for h4 in soup.find_all('h4'):
             a_tag = h4.find('a', href=True)
@@ -178,9 +187,8 @@ def get_worksheets_and_answers():
                 answers_link = a_tag['href']
                 break
 
-        # fetch answers page
         if answers_link:
-            print(f"Found answers page URL: {answers_link}")
+            send_progress("Found answers page URL, fetching answers...")
             response = requests.get(answers_link)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -203,6 +211,9 @@ def get_worksheets_and_answers():
             print(f"Could not find the answers link with text '{link_text}'.")
     else:
         print(f"Failed to fetch answers index with status code {response.status_code}.")
+
+
+    send_progress("Process completed.")
 
     print("Worksheets dictionary:", worksheets)
     print("Answers dictionary:", answers)
@@ -247,3 +258,4 @@ def index():
 # run app
 if __name__ == '__main__':
     app.run(debug=True)
+    socketio.run(app, debug=True)
