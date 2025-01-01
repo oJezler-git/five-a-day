@@ -5,6 +5,7 @@ certifi==2024.12.14
 charset-normalizer==3.4.1
 click==8.1.8
 Flask==3.1.0
+Flask-SocketIO==5.5.0
 holidays==0.63
 idna==3.10
 itsdangerous==2.2.0
