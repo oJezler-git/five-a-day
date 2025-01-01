@@ -1,7 +1,7 @@
 # IMPORTS
 
 # Flask for web app
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 
 # Requests to be able to scrape the corbettmaths website
 import requests
@@ -208,9 +208,25 @@ def get_worksheets_and_answers():
     return worksheets, answers
 
 
+@app.route('/fetch_data')
+def fetch_data():
+    worksheets, answers = get_worksheets_and_answers()
+    current_date = datetime.now().date()
+
+    gcse_links = worksheets['GCSE'].get(current_date, "No GCSE worksheets found for today")
+    further_maths_links = worksheets['Further Maths'].get(current_date, "No Further Maths worksheets found for today")
+    gcse_answers = answers['GCSE'].get(current_date, "No GCSE answers found for today")
+    further_maths_answers = answers['Further Maths'].get(current_date, "No Further Maths answers found for today")
+
+    return jsonify({
+        'gcse_links': gcse_links,
+        'further_maths_links': further_maths_links,
+        'gcse_answers': gcse_answers,
+        'further_maths_answers': further_maths_answers
+    })
+
 @app.route('/')
 def index():
-    worksheets, answers = get_worksheets_and_answers()
     current_date = datetime.now().date()
     formatted_date = current_date.strftime('%d-%m-%Y')
 
@@ -232,17 +248,7 @@ def index():
     else:
         display_date = formatted_date
 
-    gcse_links = worksheets['GCSE'].get(current_date, "No GCSE worksheets found for today (This is highly likely to be an error)")
-    further_maths_links = worksheets['Further Maths'].get(current_date, "No Further Maths worksheets found for today (This is highly likely to be an error)")
-    gcse_answers = answers['GCSE'].get(current_date, "No GCSE answers found for today (This is highly likely to be an error)")
-    further_maths_answers = answers['Further Maths'].get(current_date, "No Further Maths answers found for today (This is highly likely to be an error)")
+    return render_template('index.html', date=display_date)
 
-    return render_template('index.html', date=display_date, gcse_links=gcse_links,
-                           further_maths_links=further_maths_links, gcse_answers=gcse_answers,
-                           further_maths_answers=further_maths_answers)
-
-
-
-# run app
 if __name__ == '__main__':
     app.run(debug=True)
