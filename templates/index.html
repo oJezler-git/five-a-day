@@ -1,0 +1,81 @@
+<!-- 
+
+██╗  ██╗███████╗██╗   ██╗    ██╗   ██╗ ██████╗ ██╗   ██╗    ██╗
+██║  ██║██╔════╝╚██╗ ██╔╝    ╚██╗ ██╔╝██╔═══██╗██║   ██║    ██║
+███████║█████╗   ╚████╔╝      ╚████╔╝ ██║   ██║██║   ██║    ██║
+██╔══██║██╔══╝    ╚██╔╝        ╚██╔╝  ██║   ██║██║   ██║    ╚═╝
+██║  ██║███████╗   ██║          ██║   ╚██████╔╝╚██████╔╝    ██╗
+╚═╝  ╚═╝╚══════╝   ╚═╝          ╚═╝    ╚═════╝  ╚═════╝     ╚═╝
+
+Yes, you. you're probably here because you want the source code. 
+This was built using flask so the source code is hidden away.
+But don't worry, you can find it here: https://github.com/oJezler-git/five-a-day
+
+(IP grabber not included, jk*)
+
+ -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 A DAY {{ date }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.1/lottie.min.js"></script>
+</head>
+<body>
+    <svg id="symbol-container"></svg>
+    <div id="lottie-background-left" class="lottie-background"></div>
+    <div id="lottie-background-right" class="lottie-background"></div>
+    <div class="container">
+        <header class="header">
+            <img src="{{ url_for('static', filename='title.png') }}" alt="Corbett Maths Worksheets" class="title-image">
+            <img src="{{ url_for('static', filename='lights.png') }}" alt="Lights Overlay" class="lights-overlay" style="width: 100%; height: auto; opacity: 0.9;">
+            <p class="date">For today's date: {{ date }}</p>
+        </header>
+        <div class="card gcse">
+            <h2>GCSE Worksheets</h2>
+            <ul>
+                {% if gcse_links is string %}
+                    <li>{{ gcse_links }}</li>
+                {% else %}
+                    {% for text, link in gcse_links %}
+                        <li><a href="{{ link }}" target="_blank">{{ text }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        <div class="card further-maths">
+            <h2>Further Maths Worksheets</h2>
+            <ul>
+                {% if further_maths_links is string %}
+                    <li>{{ further_maths_links }}</li>
+                {% else %}
+                    {% for text, link in further_maths_links %}
+                        <li><a href="{{ link }}" target="_blank">{{ text }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        <div class="card gcse">
+            <h2>GCSE Answers</h2>
+            <ul>
+                {% if gcse_answers is string %}
+                    <li>{{ gcse_answers }}</li>
+                {% else %}
+                    {% for text, link in gcse_answers %}
+                        <li><a href="{{ link }}" target="_blank">{{ text }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div id="squares-container"></div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
+<!-- Built by Jezler, with love -->
