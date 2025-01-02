@@ -76,7 +76,7 @@ But don't worry, you can find it here: https://github.com/oJezler-git/five-a-day
              <div class="line"></div>
          </div>
          <p id="progress-text" class="progress-text">Loading... 0%</p>
-         <p id="current-task" class="current-task">Initialising...</p>
+         <p id="current-task" class="current-task">Initializing...</p>
      </div>
  
      <style>
@@ -179,57 +179,19 @@ But don't worry, you can find it here: https://github.com/oJezler-git/five-a-day
              const progressText = document.getElementById('progress-text');
              const currentTaskText = document.getElementById('current-task');
              const content = document.getElementById('content');
-             let progress = 0;
  
-             const tasks = [
-                 "Connecting to Corbett Maths...",
-                 "Fetching URLs...",
-                 "Parsing GCSE Worksheets...",
-                 "Finding answers link for GCSE...",
-                 "Fetching answers for GCSE...",
-                 "Parsing Further Maths Worksheets...",
-                 "Fetching Answers index...",
-                 "Found answers page URL, fetching answers...",
-                 "Loading Webpage..."
-             ];
+             // Fetch data from the server
+             fetch('/fetch_data')
+                 .then(response => response.json())
+                 .then(data => {
+                     document.getElementById('gcse-worksheets').innerHTML = data.gcse_links.map(link => `<li><a href="${link[1]}" target="_blank">${link[0]}</a></li>`).join('');
+                     document.getElementById('further-maths-worksheets').innerHTML = data.further_maths_links.map(link => `<li><a href="${link[1]}" target="_blank">${link[0]}</a></li>`).join('');
+                     document.getElementById('gcse-answers').innerHTML = data.gcse_answers.map(link => `<li><a href="${link[1]}" target="_blank">${link[0]}</a></li>`).join('');
+                     document.getElementById('further-maths-answers').innerHTML = data.further_maths_answers.map(link => `<li><a href="${link[1]}" target="_blank">${link[0]}</a></li>`).join('');
  
-             function updateTask(index) {
-                 if (index < tasks.length) {
-                     currentTaskText.textContent = tasks[index];
-                 } else {
-                     currentTaskText.textContent = "Finishing up...";
-                 }
-             }
- 
-             const interval = setInterval(() => {
-                 progress += Math.floor(Math.random() * 10) + 5;
-                 progress = Math.min(progress, 100);
-                 progressText.textContent = `Loading... ${progress}%`;
- 
-                 const taskIndex = Math.floor((progress / 100) * tasks.length);
-                 updateTask(taskIndex);
- 
-                 if (progress === 100) {
-                     clearInterval(interval);
+                     // Hide loader and show content
                      loader.style.display = 'none';
                      content.style.display = 'block';
- 
-                     // Fetch data from the server
-                     fetch('/fetch_data')
-                         .then(response => response.json())
-                         .then(data => {
-                             document.getElementById('gcse-worksheets').innerHTML = data.gcse_links.map(link => `<li><a href="${link[1]}" target="_blank">${link[0]}</a></li>`).join('');
-                             document.getElementById('further-maths-worksheets').innerHTML = data.further_maths_links.map(link => `<li><a href="${link[1]}" target="_blank">${link[0]}</a></li>`).join('');
-                             document.getElementById('gcse-answers').innerHTML = data.gcse_answers.map(link => `<li><a href="${link[1]}" target="_blank">${link[0]}</a></li>`).join('');
-                             document.getElementById('further-maths-answers').innerHTML = data.further_maths_answers.map(link => `<li><a href="${link[1]}" target="_blank">${link[0]}</a></li>`).join('');
-                         })
-                         .catch(error => {
-                             console.error('Error fetching data:', error);
-                             document.getElementById('gcse-worksheets').innerHTML = '<li>Error loading data</li>';
-                             document.getElementById('further-maths-worksheets').innerHTML = '<li>Error loading data</li>';
-                             document.getElementById('gcse-answers').innerHTML = '<li>Error loading data</li>';
-                             document.getElementById('further-maths-answers').innerHTML = '<li>Error loading data</li>';
-                         });
  
                      // Dynamically load the script
                      const script = document.createElement('script');
@@ -238,15 +200,25 @@ But don't worry, you can find it here: https://github.com/oJezler-git/five-a-day
  
                      script.onload = () => {
                          console.log('scripts.js loaded');
-                         initialiseAnimations();
+                         initializeAnimations();
                      };
  
                      document.body.appendChild(script);
-                 }
-             }, 500); // Update progress every 500ms
+                 })
+                 .catch(error => {
+                     console.error('Error fetching data:', error);
+                     document.getElementById('gcse-worksheets').innerHTML = '<li>Error loading data</li>';
+                     document.getElementById('further-maths-worksheets').innerHTML = '<li>Error loading data</li>';
+                     document.getElementById('gcse-answers').innerHTML = '<li>Error loading data</li>';
+                     document.getElementById('further-maths-answers').innerHTML = '<li>Error loading data</li>';
+ 
+                     // Hide loader and show content
+                     loader.style.display = 'none';
+                     content.style.display = 'block';
+                 });
          });
  
-         function initialiseAnimations() {
+         function initializeAnimations() {
              const animationLeft = bodymovin.loadAnimation({
                  container: document.getElementById('lottie-background-left'),
                  renderer: 'svg',
@@ -272,10 +244,10 @@ But don't worry, you can find it here: https://github.com/oJezler-git/five-a-day
              animationLeft.setSpeed(0.5);
              animationRight.setSpeed(0.5);
  
-             initialiseSymbols();
+             initializeSymbols();
          }
  
-         function initialiseSymbols() {
+         function initializeSymbols() {
              const numSymbol = 25;
              const symbolArray = [];
              const svg = document.getElementById('symbol-container');
@@ -340,6 +312,7 @@ But don't worry, you can find it here: https://github.com/oJezler-git/five-a-day
      </script>
  </body>
  </html>
+ 
  
  
  <!-- Built by Jezler, with love -->
