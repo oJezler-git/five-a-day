@@ -17,15 +17,15 @@
       <meta name="twitter:image" content="https://i.imgur.com/XoekXQ0.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.1/lottie.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.1/lottie.min.js"></script> -->
     <link rel="stylesheet" href="styles.css">
     <style>.loader-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;top:0;left:0;width:100%;height:100vh;background:rgb(0 0 0 / .8);z-index:9999;font-family:Arial,sans-serif}.loader-container{--uib-size:50px;--uib-color:#3498db;--uib-speed:0.9s;--uib-stroke:4px;position:relative;display:flex;align-items:center;justify-content:center;height:var(--uib-size);width:var(--uib-size)}.line{position:absolute;top:calc(50% - var(--uib-stroke) / 2);left:0;height:var(--uib-stroke);width:100%;border-radius:calc(var(--uib-stroke) / 2);background-color:var(--uib-color);animation:rotate var(--uib-speed) ease-in-out infinite alternate;transition:background-color 0.3s ease}.line:nth-child(1){animation-delay:calc(var(--uib-speed) * -0.375)}.line:nth-child(2){animation-delay:calc(var(--uib-speed) * -0.375);opacity:.8}.line:nth-child(3){animation-delay:calc(var(--uib-speed) * -0.3);opacity:.6}.line:nth-child(4){animation-delay:calc(var(--uib-speed) * -0.225);opacity:.4}.line:nth-child(5){animation-delay:calc(var(--uib-speed) * -0.15);opacity:.2}.line:nth-child(6){animation-delay:calc(var(--uib-speed) * -0.075);opacity:.1}@keyframes rotate{0%{transform:rotate(0deg)}100%{transform:rotate(180deg)}}.progress-text{margin-top:20px;font-size:18px}.current-task{margin-top:5px;font-size:14px;font-style:italic}.progress-text,.current-task{color:#fff;text-shadow:0 0 10px rgb(255 255 255 / .3),0 0 20px rgb(255 255 255 / .3),0 0 30px rgb(255 255 255 / .1);font-weight:700;text-align:center}</style>
 </head>
 <body>
     <div id="content">
         <svg id="symbol-container"></svg>
-        <div id="lottie-background-left" class="lottie-background"></div>
-        <div id="lottie-background-right" class="lottie-background"></div>
+        <!-- <div id="lottie-background-left" class="lottie-background"></div>
+        <div id="lottie-background-right" class="lottie-background"></div> -->
         
         <div class="quicklinks-container">
             <button class="quicklinks-button" onclick="toggleQuicklinks()">
@@ -90,14 +90,213 @@
         <p id="current-task" class="current-task">Initialising...</p>
     </div>
     <script src="videos.js"></script>
+    <!-- note to self: do NOT minify source code LOL 💀 -->
     <script>
-        function toggleQuicklinks() {
-            const menu = document.querySelector('.quicklinks-menu');
-            const button = document.querySelector('.quicklinks-button');
-            menu.classList.toggle('active');
-            button.classList.toggle('active');
-        }
+        // quicklinks button
+        function toggleQuicklinks(){let e=document.querySelector(".quicklinks-menu"),t=document.querySelector(".quicklinks-button");e.classList.toggle("active"),t.classList.toggle("active")}
     </script>
-    <script>function initialiseContent(){let e=new Date,t=`${String(e.getDate()).padStart(2,"0")}-${String(e.getMonth()+1).padStart(2,"0")}`,n=e.toLocaleDateString("en-GB",{year:"numeric",month:"numeric",day:"numeric"});document.getElementById("current-date").textContent=`For today's date: ${n}`;let r=worksheetData[t]||{GCSE:{worksheets:[],answers:[]},"Further Maths":{worksheets:[],answers:[]}};function s(e,t,n){let r=document.getElementById(e);if(r.innerHTML="",0===t.length){let s=document.createElement("li");s.className="error-message",s.textContent=n,r.appendChild(s)}else t.forEach(([e,t])=>{let n=document.createElement("li"),s=document.createElement("a");s.href=t,s.textContent=e,s.target="_blank",n.appendChild(s),r.appendChild(n)})}s("gcse-worksheets",r.GCSE.worksheets,"No GCSE worksheets found for today"),s("further-maths-worksheets",r["Further Maths"].worksheets,"No Further Maths worksheets found for today"),s("gcse-answers",r.GCSE.answers,"No GCSE answers found for today"),s("further-maths-answers",r["Further Maths"].answers,"No Further Maths answers found for today");let o=bodymovin.loadAnimation({container:document.getElementById("lottie-background-left"),renderer:"svg",loop:!0,autoplay:!0,path:"https://uploads-ssl.webflow.com/63c6b6a8e34f347803dc4c5a/63c72e591d68c14a86db2727_night-sky.json"}),a=bodymovin.loadAnimation({container:document.getElementById("lottie-background-right"),renderer:"svg",loop:!0,autoplay:!0,path:"https://uploads-ssl.webflow.com/63c6b6a8e34f347803dc4c5a/63c72e591d68c14a86db2727_night-sky.json"});o.setSpeed(.5),a.setSpeed(.5),initialiseSymbols()}function initialiseSymbols(){let e=[],t=document.getElementById("symbol-container"),n=window.innerWidth/2,r=window.innerHeight/2;document.addEventListener("mousemove",e=>{n=e.clientX,r=e.clientY});let s=["\xd7","+","-","\xf7"];for(let o=0;o<25;o++){let a=document.createElementNS("http://www.w3.org/2000/svg","text");a.setAttribute("fill","lightblue"),a.setAttribute("font-size","20"),a.setAttribute("text-anchor","middle"),a.setAttribute("dominant-baseline","middle"),a.textContent=s[Math.floor(Math.random()*s.length)],a.style.filter="drop-shadow(0 0 10px rgba(0, 255, 255, 0.8))",t.appendChild(a),e.push({element:a,x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,speedX:2*Math.random()+.5,speedY:2*Math.random()+.5,sway:.02*Math.random()-.01,direction:Math.random()*Math.PI*2})}!function t(){e.forEach(e=>{e.x+=e.speedX*Math.cos(e.direction),e.y+=e.speedY*Math.sin(e.direction),e.x+=Math.sin(e.direction)*e.sway*30,e.y+=Math.cos(e.direction)*e.sway*20,e.direction+=e.sway,(e.x>window.innerWidth||e.x<0)&&(e.speedX=-e.speedX),(e.y>window.innerHeight||e.y<0)&&(e.speedY=-e.speedY),e.x+=(n-e.x)*.01,e.y+=(r-e.y)*.01,e.element.setAttribute("x",e.x),e.element.setAttribute("y",e.y)}),requestAnimationFrame(t)}()}document.addEventListener("DOMContentLoaded",()=>{if("true"===localStorage.getItem("ca67d"))document.querySelector(".loader-wrapper").style.display="none",initialiseContent();else{let e=document.querySelector(".loader-wrapper"),t=document.getElementById("progress-text"),n=document.getElementById("current-task"),r=0,s=["Connecting to Corbett Maths...","Fetching URLs...","Parsing GCSE Worksheets...","Finding answers link for GCSE...","Fetching answers for GCSE...","Parsing Further Maths Worksheets...","Fetching Answers index...","Found answers page URL, fetching answers...","Caching..."];function o(e){e<s.length?n.textContent=s[e]:n.textContent="Finishing up..."}let a=setInterval(()=>{r+=Math.floor(10*Math.random())+5,r=Math.min(r,100),t.textContent=`Loading... ${r}%`;let n=Math.floor(r/100*s.length);o(n),100===r&&(clearInterval(a),e.style.display="none",localStorage.setItem("ca67d","true"),initialiseContent())},500)}});</script>
+    <script>
+        // starry background
+        function createStarryBackground(){let e=document.createElement("canvas");e.className="star-background",document.body.appendChild(e),e.width=window.innerWidth,e.height=window.innerHeight;let r=e.getContext("2d"),t=[],i=Math.min(Math.floor(window.innerWidth/8),120);for(let n=0;n<i;n++)t.push({x:Math.random()*e.width,y:Math.random()*e.height,size:2*Math.random()+.5,opacity:.1+.5*Math.random(),cycle:2*Math.random()*Math.PI,speed:.003+.005*Math.random(),color:Math.random()>.8?Math.random()>.5?"rgba(173, 216, 230, 1)":"rgba(255, 255, 224, 1)":"rgba(255, 255, 255, 1)"});let a;window.addEventListener("resize",()=>{a&&clearTimeout(a),a=setTimeout(()=>{e.width=window.innerWidth,e.height=window.innerHeight,t.forEach(r=>{r.x=Math.random()*e.width,r.y=Math.random()*e.height})},200)});let l=0;function o(i){if(i-l<30){requestAnimationFrame(o);return}l=i,r.clearRect(0,0,e.width,e.height),t.forEach(e=>{e.cycle+=e.speed;let t=e.opacity*(.5+.5*Math.sin(e.cycle));r.beginPath(),r.arc(e.x,e.y,e.size,0,2*Math.PI),r.fillStyle=e.color.replace("1)",t+")"),r.fill(),e.size>1.5&&(r.beginPath(),r.arc(e.x,e.y,1.5*e.size,0,2*Math.PI),r.fillStyle=e.color.replace("1)",.2*t+")"),r.fill())}),requestAnimationFrame(o)}requestAnimationFrame(o)}
+    </script>
+    <script>
+        function initialiseContent() {
+            createStarryBackground();
+            
+            let e=new Date,
+                t=`${String(e.getDate()).padStart(2,"0")}-${String(e.getMonth()+1).padStart(2,"0")}`,
+                n=e.toLocaleDateString("en-GB",{year:"numeric",month:"numeric",day:"numeric"});
+            
+            // date selector
+            let dateContainer = document.getElementById("current-date");
+            dateContainer.innerHTML = `
+                <span>For today's date: ${n}</span>
+                <button id="change-date-btn" class="highlight-button" data-text="Change Date">
+                    <span class="actual-text">&nbsp;Change&nbsp;Date&nbsp;</span>
+                    <span aria-hidden="true" class="hover-text">&nbsp;Change&nbsp;Date&nbsp;</span>
+                </button>
+                <div id="date-picker-container" class="date-picker-container">
+                    <button class="close-btn">&times;</button>
+                    <input type="date" id="date-picker" class="date-picker">
+                    <button id="apply-date-btn" class="apply-date-btn">Apply</button>
+                </div>
+            `;
+            
+            // confirmation dialog
+            let confirmationDialog = document.createElement('div');
+            confirmationDialog.className = 'confirmation-dialog';
+            confirmationDialog.innerHTML = `
+                <button class="close-btn">&times;</button>
+                <p>Reset to today's date?</p>
+                <div class="confirmation-buttons">
+                    <button class="confirm-btn">Yes</button>
+                    <button class="cancel-btn">No</button>
+                </div>
+            `;
+            document.body.appendChild(confirmationDialog);
+            
+            const changeDateBtn = document.getElementById("change-date-btn");
+            
+            changeDateBtn.addEventListener("click", function() {
+                // If in reset mode, show confirmation dialog
+                if (this.classList.contains('reset-mode')) {
+                    // Simply show the dialog (it will be centered by CSS)
+                    confirmationDialog.classList.add("visible");
+                } else {
+                    // Otherwise toggle date picker
+                    document.getElementById("date-picker-container").classList.toggle("active");
+                }
+            });
+            
+            document.getElementById("apply-date-btn").addEventListener("click", function() {
+                let selectedDate = document.getElementById("date-picker").value;
+                if (selectedDate) {
+                    let dateParts = selectedDate.split("-");
+                    let formattedDate = `${dateParts[2]}-${dateParts[1]}`;
+                    let displayDate = new Date(selectedDate).toLocaleDateString("en-GB", {
+                        year: "numeric", month: "numeric", day: "numeric"
+                    });
+                    
+                    document.querySelector("#current-date span").textContent = `Selected date: ${displayDate}`;
+                    document.getElementById("date-picker-container").classList.remove("active");
+                    
+                    // Change button to Reset mode
+                    changeDateBtn.classList.add("reset-mode");
+                    changeDateBtn.setAttribute("data-text", "Reset");
+                    changeDateBtn.querySelector(".actual-text").innerHTML = "&nbsp;Reset&nbsp;";
+                    changeDateBtn.querySelector(".hover-text").innerHTML = "&nbsp;Reset&nbsp;";
+                    
+                    // Update content for selected date
+                    updateContentForDate(formattedDate);
+                }
+            });
+            
+            // Add event listeners for confirmation dialog
+            document.querySelector(".confirm-btn").addEventListener("click", function() {
+                // Reset to today's date
+                let today = new Date();
+                let todayFormatted = `${String(today.getDate()).padStart(2,"0")}-${String(today.getMonth()+1).padStart(2,"0")}`;
+                let todayDisplay = today.toLocaleDateString("en-GB", {
+                    year: "numeric", month: "numeric", day: "numeric"
+                });
+                
+                document.querySelector("#current-date span").textContent = `For today's date: ${todayDisplay}`;
+                
+                // Change button back to Change Date mode
+                changeDateBtn.classList.remove("reset-mode");
+                changeDateBtn.setAttribute("data-text", "Change Date");
+                changeDateBtn.querySelector(".actual-text").innerHTML = "&nbsp;Change&nbsp;Date&nbsp;";
+                changeDateBtn.querySelector(".hover-text").innerHTML = "&nbsp;Change&nbsp;Date&nbsp;";
+                
+                confirmationDialog.classList.remove("visible");
+                
+                updateContentForDate(todayFormatted);
+            });
+            
+            document.querySelector(".cancel-btn").addEventListener("click", function() {
+                confirmationDialog.classList.remove("visible");
+            });
+
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const parent = this.closest('.date-picker-container, .confirmation-dialog');
+                    if (parent.classList.contains('date-picker-container')) {
+                        parent.classList.remove('active');
+                    } else {
+                        parent.classList.remove('visible');
+                    }
+                });
+            });
+            
+            // click outside to dismiss
+            document.addEventListener('click', function(event) {
+                // For date picker
+                const datePicker = document.getElementById('date-picker-container');
+                const changeDateBtn = document.getElementById('change-date-btn');
+                
+                if (datePicker.classList.contains('active') && 
+                    !datePicker.contains(event.target) && 
+                    event.target !== changeDateBtn && 
+                    !changeDateBtn.contains(event.target)) {
+                    datePicker.classList.remove('active');
+                }
+                
+                // For confirmation dialog
+                const confirmDialog = document.querySelector('.confirmation-dialog');
+                if (confirmDialog.classList.contains('visible') && 
+                    !confirmDialog.contains(event.target) && 
+                    event.target !== changeDateBtn && 
+                    !changeDateBtn.contains(event.target)) {
+                    confirmDialog.classList.remove('visible');
+                }
+            });
+            
+            // Function to update content for a specific date
+            function updateContentForDate(dateKey) {
+                let r = worksheetData[dateKey] || {GCSE:{worksheets:[],answers:[]},"Further Maths":{worksheets:[],answers:[]}};
+                
+                // Add content-changed class to all cards to trigger animation
+                document.querySelectorAll('.card').forEach(card => {
+                    card.classList.add('content-changed');
+                    
+                    // Remove the class after animation completes
+                    setTimeout(() => {
+                        card.classList.remove('content-changed');
+                    }, 1200);
+                });
+                
+                s("gcse-worksheets",r.GCSE.worksheets,"No GCSE worksheets found for this date");
+                s("further-maths-worksheets",r["Further Maths"].worksheets,"No Further Maths worksheets found for this date");
+                s("gcse-answers",r.GCSE.answers,"No GCSE answers found for this date");
+                s("further-maths-answers",r["Further Maths"].answers,"No Further Maths answers found for this date");
+            }
+            
+            let r=worksheetData[t]||{GCSE:{worksheets:[],answers:[]},"Further Maths":{worksheets:[],answers:[]}};
+            
+            function s(e,t,n){let o=document.getElementById(e);if(o.innerHTML="",0===t.length){if(e === "further-maths-answers" && r["Further Maths"].worksheets.length > 0) {
+                let s=document.createElement("li");
+                s.className="error-message",
+                s.textContent="Corbett Maths did not provide answers for this worksheet",
+                o.appendChild(s)
+            } else if(e !== "further-maths-answers") {
+                let s=document.createElement("li");
+                s.className="error-message",
+                s.textContent=n,
+                o.appendChild(s)
+            }
+        }else t.forEach(([e,t])=>{let n=document.createElement("li"),s=document.createElement("a");s.href=t,s.textContent=e,s.target="_blank",n.appendChild(s),o.appendChild(n)})}
+        
+        s("gcse-worksheets",r.GCSE.worksheets,"No GCSE worksheets found for today");
+        s("further-maths-worksheets",r["Further Maths"].worksheets,"No Further Maths worksheets found for today");
+        s("gcse-answers",r.GCSE.answers,"No GCSE answers found (this is HIGHLY likely an error)");
+        s("further-maths-answers",r["Further Maths"].answers,"No Further Maths answers found (this is HIGHLY likely an error)");
+        
+        initialiseSymbols();
+    }
+
+    function initialiseSymbols(){
+        let e=[],t=document.getElementById("symbol-container"),n=window.innerWidth/2,r=window.innerHeight/2;
+        document.addEventListener("mousemove",e=>{n=e.clientX,r=e.clientY});
+        let s=["\xd7","+","-","\xf7"];
+        for(let o=0;o<25;o++){
+            let a=document.createElementNS("http://www.w3.org/2000/svg","text");
+            a.setAttribute("fill","lightblue"),a.setAttribute("font-size","20"),a.setAttribute("text-anchor","middle"),a.setAttribute("dominant-baseline","middle"),a.textContent=s[Math.floor(Math.random()*s.length)],a.style.filter="drop-shadow(0 0 10px rgba(0, 255, 255, 0.8))",t.appendChild(a),e.push({element:a,x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,speedX:2*Math.random()+.5,speedY:2*Math.random()+.5,sway:.02*Math.random()-.01,direction:Math.random()*Math.PI*2})
+        }
+        !function t(){e.forEach(e=>{e.x+=e.speedX*Math.cos(e.direction),e.y+=e.speedY*Math.sin(e.direction),e.x+=Math.sin(e.direction)*e.sway*30,e.y+=Math.cos(e.direction)*e.sway*20,e.direction+=e.sway,(e.x>window.innerWidth||e.x<0)&&(e.speedX=-e.speedX),(e.y>window.innerHeight||e.y<0)&&(e.speedY=-e.speedY),e.x+=(n-e.x)*.01,e.y+=(r-e.y)*.01,e.element.setAttribute("x",e.x),e.element.setAttribute("y",e.y)}),requestAnimationFrame(t)}()
+    }
+
+
+    // loader
+    document.addEventListener("DOMContentLoaded",()=>{
+        if("true"===localStorage.getItem("ca67d"))
+            document.querySelector(".loader-wrapper").style.display="none",initialiseContent();
+        else{
+            let e=document.querySelector(".loader-wrapper"),t=document.getElementById("progress-text"),n=document.getElementById("current-task"),r=0,s=["Connecting to Corbett Maths...","Fetching URLs...","Parsing GCSE Worksheets...","Finding answers link for GCSE...","Fetching answers for GCSE...","Parsing Further Maths Worksheets...","Fetching Answers index...","Found answers page URL, fetching answers...","Caching..."];
+            function o(e){e<s.length?n.textContent=s[e]:n.textContent="Finishing up..."}
+            let a=setInterval(()=>{r+=Math.floor(10*Math.random())+5,r=Math.min(r,100),t.textContent=`Loading... ${r}%`;
+            let n=Math.floor(r/100*s.length);o(n),100===r&&(clearInterval(a),e.style.display="none",localStorage.setItem("ca67d","true"),initialiseContent())},500)
+        }
+    });
+    </script>
 </body>
 </html>
