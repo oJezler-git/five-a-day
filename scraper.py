@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import json
 import re
 import logging
-from datetime import datetime
+# from datetime import datetime
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -27,6 +27,7 @@ def extract_date(text):
         'December': '12', 'Dec': '12'
     }
     
+    # handle cases where month is followed by text without spaces
     pattern = r'^\s*(\d+)(?:st|nd|rd|th)?\s+(\w+)'
     match = re.search(pattern, text.strip(), re.IGNORECASE)
     
@@ -34,14 +35,17 @@ def extract_date(text):
         day = match.group(1).zfill(2)
         month_text = match.group(2).capitalize()
         
-        try:
-            month = months[month_text]
-            date_key = f"{day}-{month}"
-            logging.debug(f"Extracted date '{date_key}' from text: '{text}'")
-            return date_key
-        except KeyError:
-            logging.warning(f"Unrecognized month format: {month_text} in text: {text}")
-            return None
+        # Check if the month_text contains a valid month name at the beginning
+        for month_name in months.keys():
+            if month_text.startswith(month_name):
+                month = months[month_name]
+                date_key = f"{day}-{month}"
+                logging.debug(f"Extracted date '{date_key}' from text: '{text}'")
+                return date_key
+        
+        # If we get here, no valid month was found
+        logging.warning(f"Unrecognized month format: {month_text} in text: {text}")
+        return None
     
     logging.debug(f"No date match found in text: '{text}'")
     return None
@@ -142,15 +146,56 @@ def scrape_further_maths(url, worksheets_data):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        paragraphs = soup.find_all('p', class_='p2')
+        logging.info(f"Scraping Further Maths from {url}")
+        
+        # Get all paragraphs
+        paragraphs = soup.find_all('p')
+        date_count = 0
+        content_added = 0
         
         for p in paragraphs:
             text = p.get_text(strip=True)
-            date = extract_date(text)
             
+            # Skip empty paragraphs
+            if not text:
+                continue
+                
+            date = extract_date(text)
             if date:
+                date_count += 1
                 links = p.find_all('a')
-                if len(links) >= 2:
+                
+                # Debug information
+                logging.debug(f"Found date {date} with {len(links)} links")
+                for i, link in enumerate(links):
+                    logging.debug(f"  Link {i+1}: {link.get_text(strip=True)} -> {link.get('href', '')}")
+                
+                # Initialize worksheet and answer links
+                worksheet_link = None
+                answer_link = None
+                
+                # If we have exactly 2 links, assume first is worksheet, second is answer
+                if len(links) == 2:
+                    worksheet_link = links[0]['href']
+                    answer_link = links[1]['href']
+                # Otherwise try to identify by link text
+                else:
+                    for link in links:
+                        href = link.get('href', '')
+                        if not href:
+                            continue
+                            
+                        link_text = link.get_text(strip=True).lower()
+                        
+                        if 'answer' in link_text or 'ans' in link_text:
+                            answer_link = href
+                        elif 'further' in link_text or 'maths' in link_text or 'fm' in link_text:
+                            worksheet_link = href
+                
+                # If we found at least one link, add to data
+                if worksheet_link or answer_link:
+                    content_added += 1
+                    
                     if date not in worksheets_data:
                         worksheets_data[date] = {
                             "GCSE": {
@@ -163,13 +208,19 @@ def scrape_further_maths(url, worksheets_data):
                             }
                         }
                     
-                    worksheets_data[date]["Further Maths"]["worksheets"] = [
-                        ["Further Maths", links[0]['href']]
-                    ]
-                    worksheets_data[date]["Further Maths"]["answers"] = [
-                        ["Answers", links[1]['href']]
-                    ]
-                    logging.info(f"Added Further Maths content for date: {date}")
+                    if worksheet_link:
+                        worksheets_data[date]["Further Maths"]["worksheets"] = [
+                            ["Further Maths", worksheet_link]
+                        ]
+                        logging.info(f"Added Further Maths worksheet for date: {date}")
+                    
+                    if answer_link:
+                        worksheets_data[date]["Further Maths"]["answers"] = [
+                            ["Answers", answer_link]
+                        ]
+                        logging.info(f"Added Further Maths answer for date: {date}")
+        
+        logging.info(f"Found {date_count} dates and added content for {content_added} dates in Further Maths page")
     
     except requests.RequestException as e:
         logging.error(f"Error scraping Further Maths page: {str(e)}")
@@ -185,13 +236,44 @@ def save_to_js(data):
         
         logging.info("Successfully saved data to worksheets.js")
         
+        # Create a separate file for missing content
+        missing_content = []
+        
         logging.info(f"Total number of dates: {len(sorted_data)}")
         for date in sorted_data:
             worksheet_count = len(sorted_data[date]["GCSE"]["worksheets"])
             answer_count = len(sorted_data[date]["GCSE"]["answers"])
             fm_worksheet_count = len(sorted_data[date]["Further Maths"]["worksheets"])
             fm_answer_count = len(sorted_data[date]["Further Maths"]["answers"])
+            
+            # Log and collect missing content information
+            if worksheet_count == 0:
+                message = f"Date {date}: GCSE worksheets are empty"
+                logging.warning(message)
+                missing_content.append(message)
+            if answer_count == 0:
+                message = f"Date {date}: GCSE answers are empty"
+                logging.warning(message)
+                missing_content.append(message)
+            if fm_worksheet_count == 0:
+                message = f"Date {date}: Further Maths worksheets are empty"
+                logging.warning(message)
+                missing_content.append(message)
+            if fm_answer_count == 0:
+                message = f"Date {date}: Further Maths answers are empty"
+                logging.warning(message)
+                missing_content.append(message)
+                
             logging.info(f"Date {date}: GCSE - {worksheet_count} worksheets, {answer_count} answers, FM - {fm_worksheet_count} worksheets, {fm_answer_count} answers")
+        
+        # Save missing content to a separate file
+        if missing_content:
+            with open('missing_content.txt', 'w') as f:
+                f.write("Missing Content Report\n")
+                f.write("====================\n\n")
+                for item in missing_content:
+                    f.write(f"{item}\n")
+            logging.info(f"Saved missing content report to missing_content.txt with {len(missing_content)} issues")
     
     except Exception as e:
         logging.error(f"Error saving data to file: {str(e)}")
