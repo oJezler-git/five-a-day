@@ -21,13 +21,45 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.1/lottie.min.js"></script> -->
     <link rel="stylesheet" href="styles.css">
     <style>.loader-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;top:0;left:0;width:100%;height:100vh;background:rgb(0 0 0 / .8);z-index:9999;font-family:Arial,sans-serif}.loader-container{--uib-size:50px;--uib-color:#3498db;--uib-speed:0.9s;--uib-stroke:4px;position:relative;display:flex;align-items:center;justify-content:center;height:var(--uib-size);width:var(--uib-size)}.line{position:absolute;top:calc(50% - var(--uib-stroke) / 2);left:0;height:var(--uib-stroke);width:100%;border-radius:calc(var(--uib-stroke) / 2);background-color:var(--uib-color);animation:rotate var(--uib-speed) ease-in-out infinite alternate;transition:background-color 0.3s ease}.line:nth-child(1){animation-delay:calc(var(--uib-speed) * -0.375)}.line:nth-child(2){animation-delay:calc(var(--uib-speed) * -0.375);opacity:.8}.line:nth-child(3){animation-delay:calc(var(--uib-speed) * -0.3);opacity:.6}.line:nth-child(4){animation-delay:calc(var(--uib-speed) * -0.225);opacity:.4}.line:nth-child(5){animation-delay:calc(var(--uib-speed) * -0.15);opacity:.2}.line:nth-child(6){animation-delay:calc(var(--uib-speed) * -0.075);opacity:.1}@keyframes rotate{0%{transform:rotate(0deg)}100%{transform:rotate(180deg)}}.progress-text{margin-top:20px;font-size:18px}.current-task{margin-top:5px;font-size:14px;font-style:italic}.progress-text,.current-task{color:#fff;text-shadow:0 0 10px rgb(255 255 255 / .3),0 0 20px rgb(255 255 255 / .3),0 0 30px rgb(255 255 255 / .1);font-weight:700;text-align:center}</style>
+    <style>
+    .video-button-container {
+        position: fixed;
+        top: 10px;
+        right: 110px; /* Position it to the left of the QuickLinks button */
+        z-index: 1000;
+    }
+    
+    .video-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .video-button:hover {
+        background-color: #388E3C;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+</style>
 </head>
 <body>
     <div id="content">
         <svg id="symbol-container"></svg>
         <!-- <div id="lottie-background-left" class="lottie-background"></div>
         <div id="lottie-background-right" class="lottie-background"></div> -->
-        
+        <div class="video-button-container">
+            <button class="video-button highlight-button" onclick="openVideoTutorial()" data-text="Video Tutorial">
+                <span class="actual-text">&nbsp;Video&nbsp;Tutorial&nbsp;</span>
+                <span aria-hidden="true" class="hover-text">&nbsp;Video&nbsp;Tutorial&nbsp;</span>
+            </button>
+        </div>
         <div class="quicklinks-container">
             <button class="quicklinks-button" onclick="toggleQuicklinks()">
                 <span>QuickLinks</span>
@@ -95,6 +127,11 @@
     <script>
         // quicklinks button
         function toggleQuicklinks(){let e=document.querySelector(".quicklinks-menu"),t=document.querySelector(".quicklinks-button");e.classList.toggle("active"),t.classList.toggle("active")}
+    </script>
+    <script>
+    function openVideoTutorial() {
+            window.open('https://www.youtube.com/watch?v=BlaoUCBnAHQ', '_blank');
+        }
     </script>
     <script>
         // starry background
